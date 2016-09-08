@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^README-.*\.png$
+^\.travis\.yml$
+^LICENSE
+^vicar.bib
+^README.html
+^News\.md$
+^NEWS\.md$
