@@ -25,6 +25,9 @@
 *.pdf
 *.el
 _region_.tex
+*.nav
+*.snm
+*.toc
 
 # packages #
 ############
