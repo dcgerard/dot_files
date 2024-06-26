@@ -3,10 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
- '(custom-enabled-themes (quote (misterioso)))
- '(ess-swv-processor (quote knitr))
- '(inhibit-startup-screen t))
+ '(custom-safe-themes
+   '("0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" default))
+ '(package-selected-packages '(ess poly-R polymode modus-themes auctex-latexmk auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -14,79 +13,37 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; AucTex options --------------------------------------------------
-(setq TeX-PDF-mode t)
-(setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
+;; melpa package manager
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
-;; ESS options ------------------------------------------------------
-(setq ess-default-style 'C++)
-(ess-toggle-underscore nil)
+;; tex stuff
+(setq TeX-parse-self t)
+(setq TeX-PDF-mode t)
+(require 'auctex-latexmk)
+(auctex-latexmk-setup)
+(setq auctex-latexmk-inherit-TeX-PDF-mode t)
+
+;; remove spash screen
+(setq inhibit-splash-screen t)
+
+;; 80 character colum
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(setopt display-fill-column-indicator-column 80)
+
+;; show column number
+(setq column-number-mode t)
 
 ;; makes switching between buffers easy -----------------------------
 (require 'ido)
 (ido-mode t)
 
-;; show column numbers -----------------------------------------------
-(setq column-number-mode t)
+;; modus theme
+(set-face-attribute 'default (selected-frame) :height 150)
+(load-theme 'modus-vivendi)
 
-;; faster window swapping --------------------------------------------
-(global-set-key (kbd "M-[") 'previous-multiframe-window)
-(global-set-key (kbd "M-]") 'next-multiframe-window)
+;; spell check
+(setq ispell-program-name "/opt/homebrew/bin/aspell")
 
-;; better cursor color ------------------------------------------------
-(set-cursor-color "#ff0000")
-
-;; Enable MELPA repo ---------------------------------------------------
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
-(package-initialize)
-
-;;; MARKDOWN -----------------------------------------------------------
-(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
-
-;;; R modes -------------------------------------------------------------
-(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
-
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; elpy -----------------------------------------------------------------
-(require 'package)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-(package-initialize)
-(elpy-enable)
-(elpy-use-ipython)
-(setq elpy-rpc-python-command "python3")
-
-
-;; auctex autocomplete -----------------------------------------------
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
-
-(require 'ac-math)
-(add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
-
- (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-   (setq ac-sources
-         (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-                 ac-sources))
-   )
-(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-(global-auto-complete-mode t)
-
-(setq ac-math-unicode-in-math-p t)
-
-(require 'auto-complete-auctex)
-
-
-;; flycheck for r syntax correction integration with lintr
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-;; (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
-;; (setq-default flycheck-flake8-maximum-line-length 100)
+;; delete useless white space add new line on save
+(add-hook 'write-file-hooks 'delete-trailing-whitespace)
+(setq mode-require-final-newline t)
